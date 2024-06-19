@@ -31,6 +31,8 @@ function urlFromEntity(entity: Entity, id?: number) {
   if (entity === "user") {
     return "users";
   }
+
+  //TODOS
   if (entity === "userTodos") {
     return `users/${id}/todos`;
   }
@@ -40,6 +42,7 @@ function urlFromEntity(entity: Entity, id?: number) {
     return "posts";
   }
 
+   //COMMENTS
   if ( entity === "userPostComments"&& id != null){
     return `posts/${id}/comments`;
   }
@@ -47,7 +50,7 @@ function urlFromEntity(entity: Entity, id?: number) {
   return "";
 }
 
-export type Entity = "user" | "post" | "userPost" | "userPostComments" | "userTodos";
+export type Entity = "user" | "post" | "comments"| "todos"| "userPost" | "userPostComments" | "userTodos";
 
 type Method = "get" | "post" |"put" | "patch" | "delete";
 

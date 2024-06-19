@@ -22,5 +22,12 @@ test.describe("Posts test", () => {
     expect(response.ok()).toBeTruthy();
   })
 
+  test('get a user post', async ({ request }) => {
+    const response = await buildRequest(request, 'userPost', 'get', {id: 6940102});
+    console.log(await response.json());
+    expect(response.ok()).toBeTruthy();
+  });
+
+
 });
 
