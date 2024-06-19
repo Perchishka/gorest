@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+require('dotenv').config();
 
 /**
  * Read environment variables from file.
@@ -28,7 +29,7 @@ export default defineConfig({
     extraHTTPHeaders: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer 1fd990343798e53ed60f8c88274647d4a11df0a2c1e1f503214d0b5c0ad05938`,
+      'Authorization': `Bearer ${process.env.TOKEN}`,
     },
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',

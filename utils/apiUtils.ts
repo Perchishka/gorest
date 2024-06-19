@@ -18,18 +18,14 @@ export default class API {
   }
   async putRequest(endpoint: string, reqBody: object, token: string) {
     const response = await this.request.put(endpoint, {
-      data: reqBody, headers: {
-        'Cookie': `token=${token}`
-      }
+      data: reqBody
     })
     return response
   }
 
   async patchRequest(endpoint: string, reqBody: object, token: string) {
     const res = await this.request.patch(endpoint, {
-      data: reqBody, headers: {
-        'Cookie': `token=${token}`
-      }
+      data: reqBody
     })
     return res
   }
