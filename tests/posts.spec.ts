@@ -1,5 +1,5 @@
-import { test, expect } from "@playwright/test";
-import { postData, userData } from "../lib/data/mocks";
+import { expect, test } from "@playwright/test";
+
 import { buildRequest } from "../lib/helpers/requestBuilder";
 
 test.describe("Posts test", () => {

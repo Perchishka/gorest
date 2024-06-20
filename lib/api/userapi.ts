@@ -1,5 +1,6 @@
-import { APIRequestContext } from "@playwright/test";
 import { Entity, buildRequest } from "../helpers/requestBuilder";
+
+import { APIRequestContext } from "@playwright/test";
 import { userData } from "../data/mocks";
 
 export function userApi (request: APIRequestContext)  {
