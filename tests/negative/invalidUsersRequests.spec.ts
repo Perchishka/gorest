@@ -1,11 +1,11 @@
 import { expect } from "@playwright/test";
 import { fixtures as test } from "../../lib/api/apiFixtures";
-import { userData } from "../../lib/data/mocks/mocks";
 import {
   createUserWithEmail,
   validateErrorMessage,
 } from "../../lib/helpers/apiHelper";
 import { randomEmail } from "../../lib/helpers/randomiser";
+import { userData } from "../../lib/data/mocks/userMocks";
 
 test.describe("Users test negative scenarious", () => {
   const invalidEmail = ["Alice", "@", 1223];

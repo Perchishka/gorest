@@ -1,3 +1,5 @@
+import { faker } from "@faker-js/faker";
+
 const commentsData = {
   vaildComment: () => ({
     name: "Book Title",

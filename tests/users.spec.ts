@@ -1,9 +1,9 @@
 import { expect } from "@playwright/test";
 import { fixtures as test } from "../lib/api/apiFixtures";
-import { postData, userData } from "../lib/data/mocks/mocks";
 import { randomEmail } from "../lib/helpers/randomiser";
-import { UserApi } from "../lib/api/Users";
 import { createUserWithEmail } from "../lib/helpers/apiHelper";
+import { postData } from "../lib/data/mocks/postMocks";
+import { userData } from "../lib/data/mocks/userMocks";
 
 test.describe("Users test", () => {
   test("Create user", async ({ userApi }) => {

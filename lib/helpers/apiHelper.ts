@@ -1,7 +1,8 @@
 import { APIResponse, expect } from "@playwright/test";
 import { UserApi } from "../api/Users";
-import { postData, userData } from "../data/mocks/mocks";
 import { randomEmail } from "./randomiser";
+import { postData } from "../data/mocks/postMocks";
+import { userData } from "../data/mocks/userMocks";
 
 export async function validateErrorMessage(
   body: {},
