@@ -1,4 +1,3 @@
-import { Resource, User } from "../../helpers/types";
 import { faker } from "@faker-js/faker";
 
 const userData = {
@@ -22,10 +21,14 @@ const userData = {
     email: data.email || faker.internet.email(),
     status: data.status || "inactive",
   }),
+
+  updateEmail: () => ({
+    email: faker.internet.email(),
+  }),
 };
 
 const postData = {
-  validPost: (data) => ({
+  customPost: (data) => ({
     user_id: data.user_id,
     title: data.title || "Valid Post title",
     body: data.body || "Valid post body",
@@ -53,6 +56,12 @@ const commentsData = {
     name: data.name || "Custom name",
     email: data.email || faker.internet.email(),
     body: data.body || "Valid comment body",
+  }),
+
+  updatedComment: (data) => ({
+    name: data.name || "Updated name",
+    email: data.email || faker.internet.email(),
+    body: data.body || "Updated comment body",
   }),
 };
 

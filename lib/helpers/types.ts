@@ -1,14 +1,7 @@
-export type Entity =
-  | "user"
-  | "post"
-  | "comment"
-  | "todo"
-  | "userPost"
-  | "postComment"
-  | "userTodo";
+export type Entity = "users" | "posts" | "comments" | "todos";
 
 export type Method = "get" | "post" | "put" | "patch" | "delete";
-
+export type WithId = { id: number };
 export type Post = {
   id?: number;
   user_id: number;

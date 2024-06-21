@@ -2,6 +2,8 @@ import { expect } from "@playwright/test";
 import { fixtures as test } from "../lib/api/apiFixtures";
 import { postData, userData } from "../lib/data/mocks/mocks";
 import { randomEmail } from "../lib/helpers/randomiser";
+import { UserApi } from "../lib/api/Users";
+import { createUserWithEmail } from "../lib/helpers/apiHelper";
 
 test.describe("Users test", () => {
   test("Create user", async ({ userApi }) => {
@@ -20,26 +22,20 @@ test.describe("Users test", () => {
   });
 
   test("Get user details", async ({ userApi }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
-    const response = await userApi.getUserById(user.body.id);
+    const user = await createUserWithEmail(userApi);
+    const response = await userApi.getUserById(user.id);
     expect.soft(Array.isArray(response.body)).toBeFalsy();
     expect.soft(response.statusCode === 200).toBeTruthy();
-    expect.soft(response.body.email).toBe(email);
+    expect.soft(response.body.email).toBe(user.email);
     expect(test.info().errors).toHaveLength(0);
   });
 
-  test("Update user details", async ({ userApi }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
+  test("Update full user details", async ({ userApi }) => {
+    const user = await createUserWithEmail(userApi);
     const updatedEmail = randomEmail();
-    const response = await userApi.updateUserById(
+    const response = await userApi.fullUpdateUserById(
       userData.updateFieldsUser({ email: updatedEmail }),
-      user.body.id
+      user.id
     );
     expect.soft(response.status).toBeTruthy();
     expect.soft(response.statusCode === 200).toBeTruthy();
@@ -51,61 +47,70 @@ test.describe("Users test", () => {
     expect(test.info().errors).toHaveLength(0);
   });
 
+  test("Update only 1 user field", async ({ userApi }) => {
+    const user = await createUserWithEmail(userApi);
+    console.log(user);
+    const updatedFieldObject = userData.updateEmail();
+    console.log(updatedFieldObject);
+    const response = await userApi.updateUserById(updatedFieldObject, user.id);
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 200).toBeTruthy();
+    expect.soft(response.body.gender).toBe(user.gender);
+    expect.soft(response.body.email).toBe(updatedFieldObject.email);
+    expect.soft(response.body.name).toBe(user.name);
+    expect.soft(response.body.status).toBe(user.status);
+    expect(test.info().errors).toHaveLength(0);
+  });
+
   test("Create user post", async ({ userApi }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
-    const response = await userApi.createUserPost(
-      postData.validPost({ user_id: user.body.id }),
-      user.body.id
-    );
+    const user = await createUserWithEmail(userApi);
+    const psd = postData.customPost({ user_id: user.id });
+    const response = await userApi.createUserPost(psd, user.id);
     expect.soft(response.status).toBeTruthy();
     expect.soft(response.statusCode === 201).toBeTruthy();
-    expect.soft(response.body.title).toBe("Valid Post title");
-    expect.soft(response.body.body).toBe("Valid post body");
-    expect.soft(response.body.user_id).toBe(user.body.id);
+    expect.soft(response.body.title).toBe(psd.title);
+    expect.soft(response.body.body).toBe(psd.body);
+    expect.soft(response.body.user_id).toBe(user.id);
+    expect(test.info().errors).toHaveLength(0);
+  });
+
+  test("Create user todo", async ({ userApi }) => {
+    const user = await createUserWithEmail(userApi);
+    const psd = postData.customPost({ user_id: user.id });
+    const response = await userApi.createUserPost(psd, user.id);
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 201).toBeTruthy();
+    expect.soft(response.body.title).toBe(psd.title);
+    expect.soft(response.body.body).toBe(psd.body);
+    expect.soft(response.body.user_id).toBe(user.id);
     expect(test.info().errors).toHaveLength(0);
   });
 
   test("Retrieves user posts when user does not have any posts", async ({
     userApi,
   }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
-    const userPosts = await userApi.getUserPosts(user.body.id);
+    const user = await createUserWithEmail(userApi);
+    const userPosts = await userApi.getUserPosts(user.id);
     expect.soft(Array.isArray(userPosts.body)).toBeTruthy();
     expect.soft(userPosts.body.length).toBe(0);
     expect(test.info().errors).toHaveLength(0);
   });
 
   test("Retrieves user posts when user has some posts", async ({ userApi }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
+    const user = await createUserWithEmail(userApi);
     const post = await userApi.createUserPost(
-      postData.validPost({ user_id: user.body.id }),
-      user.body.id
+      postData.customPost({ user_id: user.id }),
+      user.id
     );
-    const userPosts = await userApi.getUserPosts(user.body.id);
+    const userPosts = await userApi.getUserPosts(user.id);
     expect.soft(Array.isArray(userPosts.body)).toBeTruthy();
     expect.soft(userPosts.body.length).toBe(1);
     expect(test.info().errors).toHaveLength(0);
   });
 
   test("Delete user", async ({ userApi }) => {
-    const email = randomEmail();
-    const user = await userApi.createUser(
-      userData.customUser({ email: email })
-    );
-
-    const response = await userApi.deleteUserById(user.body.id);
-    console.log(response.body);
-    expect.soft(response.status).toBeTruthy();
-    expect.soft(response.statusCode === 201).toBeTruthy();
-    expect(test.info().errors).toHaveLength(0);
+    const user = await createUserWithEmail(userApi);
+    const response = await userApi.deleteUserById(user.id);
+    expect(response.statusCode === 204).toBeTruthy();
   });
 });

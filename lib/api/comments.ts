@@ -1,26 +1,13 @@
-import { buildRequestSwitchCase } from "../helpers/requestBuilder_withswitch";
+import { BaseApi } from "./BaseApi";
 
-import { APIRequestContext } from "@playwright/test";
-import { Entity, Resource } from "../helpers/types";
+export class CommentApi extends BaseApi {
+  url = "todos";
 
-export function comments(request: APIRequestContext) {
-  const commentsEntity: Entity = "comment";
-  const postComment: Entity = "postComment";
+  getComments() {
+    return this.getAll<Comment[]>();
+  }
 
-  return {
-    getComments: async () => {
-      return await buildRequestSwitchCase(request, commentsEntity, "get", {});
-    },
-
-    createPostComment: async (data: Resource, id: number) => {
-      return await buildRequestSwitchCase(request, postComment, "post", {data, id});
-    },
-
-    getPostComments: async (post_id: number) => {
-      return await buildRequestSwitchCase(request, postComment, "get", {id: post_id});
-    },
-
-
-
-  };
+  deleteTodoById(commentId: number) {
+    return this.remove(commentId);
+  }
 }

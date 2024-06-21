@@ -1,47 +1,22 @@
-import { APIRequestContext } from "@playwright/test";
-import { buildRequest } from "../helpers/requestBuilder";
-import { Post, Resource } from "../helpers/types";
+import { BaseApi } from "./BaseApi";
+import { Post, Comment } from "../helpers/types";
 
-export class Posts {
-  private request: APIRequestContext;
-  private url = "users";
+export class PostApi extends BaseApi {
+  url = "posts";
 
-  constructor(request: APIRequestContext) {
-    this.request = request;
+  getPosts() {
+    return this.getAll<Post[]>();
   }
 
-  async getPosts() {
-    return await buildRequest(this.request, this.url, "get");
+  getPostComments(postId: number) {
+    return this.getRelated<Comment[]>(postId, "comments");
   }
 
-  async getPostComments(
-    postId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post | Post[] }> {
-    const url = this.url + `/${postId}/comments`;
-    return await buildRequest(this.request, url, "get");
+  createPostComment(data: Comment, postId: number) {
+    return this.createRelated<Comment>(postId, "comments", data);
   }
 
-  async createPostComments(
-    data: Resource,
-    postId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post }> {
-    const url = this.url + `/${postId}/comments`;
-    return await buildRequest(this.request, url, "post", data);
-  }
-
-  async deletePostComments(
-    postId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post }> {
-    const url = this.url + `/${postId}/comments`;
-    return await buildRequest(this.request, url, "delete");
-  }
-
-  async updatePostComments(
-    data: Resource,
-    postId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post }> {
-    const url = this.url + `/${postId}/comments`;
-    return await buildRequest(this.request, url, "put", data);
+  deletePostById(postId: number) {
+    return this.remove(postId);
   }
 }
-//

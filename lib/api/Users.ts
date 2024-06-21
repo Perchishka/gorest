@@ -1,59 +1,46 @@
-import { buildRequest } from "../helpers/requestBuilder";
-import { Post, Resource, User } from "../helpers/types";
-import { APIRequestContext } from "@playwright/test";
+import { BaseApi } from "./BaseApi";
+import { Post, Todo, User } from "../helpers/types";
 
-export class UserApi {
-  private request: APIRequestContext;
-  private url = "users";
+export class UserApi extends BaseApi {
+  protected url = "users";
 
-  constructor(request: APIRequestContext) {
-    this.request = request;
+  getUsers() {
+    return this.getAll<User>();
   }
 
-  async getUsers() {
-    return await buildRequest(this.request, this.url, "get");
+  createUser(data: User) {
+    return this.create(data);
   }
 
-  async createUser(
-    data: User
-  ): Promise<{ status: boolean; statusCode: number; body: User }> {
-    return await buildRequest(this.request, this.url, "post", data);
+  createUserPost(data: Post, userId: number) {
+    return this.createRelated(userId, "posts", data);
   }
 
-  createUserPost(
-    data: Resource,
-    userId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post }> {
-    const url = this.url + `/${userId}/posts`;
-    return buildRequest(this.request, url, "post", data);
+  createUserTodo(data: Post, userId: number) {
+    return this.createRelated(userId, "todos", data);
   }
 
-  async getUserPosts(
-    userId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: Post[] }> {
-    const url = this.url + `/${userId}/posts`;
-    return await buildRequest(this.request, url, "get");
+  getUserPosts(userId: number) {
+    return this.getRelated<Post[]>(userId, "posts");
   }
 
-  async getUserById(
-    userId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: User }> {
-    const url = this.url + `/${userId}`;
-    return await buildRequest(this.request, url, "get");
-  }
-  async updateUserById(
-    data: Resource,
-    userId?: number
-  ): Promise<{ status: boolean; statusCode: number; body: User }> {
-    const url = this.url + `/${userId}`;
-    return await buildRequest(this.request, url, "put", data);
+  getUserTodos(userId: number) {
+    return this.getRelated<Todo[]>(userId, "todos");
   }
 
-  // body does not work
-  async deleteUserById(
-    userId?: number
-  ): Promise<{ status: boolean; statusCode: number; body }> {
-    const url = this.url + `/${userId}`;
-    return await buildRequest(this.request, url, "delete");
+  getUserById(userId: number) {
+    return this.get<User>(userId);
+  }
+
+  fullUpdateUserById(data: Partial<User>, userId: number) {
+    return this.update(userId, "put", data);
+  }
+
+  updateUserById(data: Partial<User>, userId: number) {
+    return this.update<Partial<User>>(userId, "patch", data);
+  }
+
+  deleteUserById(userId: number) {
+    return this.remove(userId);
   }
 }
