@@ -1,0 +1,20 @@
+{
+  method: 'post',
+  url: 'users/',
+  data: {
+    name: 'Custom name',
+    gender: 'female',
+    email: 'Roxane.Turner@gmail.com',
+    status: 'active'
+  }
+}
+{
+  method: 'post',
+  url: 'users/',
+  data: {
+    name: 'Custom name',
+    gender: 'female',
+    email: 'Roxane.Turner@gmail.com',
+    status: 'active'
+  }
+}

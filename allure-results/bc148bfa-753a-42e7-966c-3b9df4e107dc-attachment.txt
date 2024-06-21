@@ -1,0 +1,10 @@
+{
+  method: 'post',
+  url: 'users/',
+  data: {
+    name: '  ',
+    gender: 'female',
+    email: 'Alessandra.Welch@gmail.com',
+    status: 'active'
+  }
+}

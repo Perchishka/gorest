@@ -7,22 +7,21 @@
         "id": {
           "type": "integer"
         },
-        "name": {
+        "user_id": {
+          "type": "integer"
+        },
+        "title": {
           "type": "string"
         },
-        "email": {
+        "due_on": {
           "type": "string",
-          "format": "email"
-        },
-        "gender": {
-          "type": "string",
-          "enum": ["male", "female"]
+          "format": "date-time"
         },
         "status": {
           "type": "string",
-          "enum": ["active", "inactive"]
+          "enum": ["pending", "completed"]
         }
       },
-      "required": ["id", "name", "email", "gender", "status"]
+      "required": ["id", "user_id", "title", "due_on", "status"]
     }
   }

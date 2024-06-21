@@ -7,6 +7,9 @@
         "id": {
           "type": "integer"
         },
+        "post_id": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },
@@ -14,15 +17,10 @@
           "type": "string",
           "format": "email"
         },
-        "gender": {
-          "type": "string",
-          "enum": ["male", "female"]
-        },
-        "status": {
-          "type": "string",
-          "enum": ["active", "inactive"]
+        "body": {
+          "type": "string"
         }
       },
-      "required": ["id", "name", "email", "gender", "status"]
+      "required": ["id", "post_id", "name", "email", "body"]
     }
   }

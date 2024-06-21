@@ -1,0 +1,11 @@
+{
+  method: 'post',
+  url: 'users',
+  data: {
+    name: 'Custom name',
+    gender: 'female',
+    email: 'Ernestina.Jacobs0@yahoo.com',
+    status: 'active'
+  }
+}
+{ method: 'get', url: 'users/6975710', data: undefined }

@@ -1,0 +1,2 @@
+{ method: 'get', url: 'users/123/posts', data: undefined }
+200

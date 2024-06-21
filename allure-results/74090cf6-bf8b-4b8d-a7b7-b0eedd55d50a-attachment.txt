@@ -1,0 +1,10 @@
+{
+  method: 'post',
+  url: 'users/',
+  data: {
+    name: 'Custom name',
+    gender: 'женский',
+    email: 'Myra_Grimes75@gmail.com',
+    status: 'active'
+  }
+}

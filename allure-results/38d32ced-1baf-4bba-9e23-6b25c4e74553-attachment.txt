@@ -1,0 +1,10 @@
+{
+  method: 'post',
+  url: 'users/',
+  data: {
+    name: 'Custom name',
+    gender: 'Alice',
+    email: 'Maureen14@gmail.com',
+    status: 'active'
+  }
+}

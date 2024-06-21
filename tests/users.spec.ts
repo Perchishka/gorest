@@ -1,87 +1,111 @@
-import { test, expect } from '@playwright/test';
-import { postData, todosData, userData } from '../lib/data/mocks';
-import { buildRequest } from '../lib/helpers/requestBuilder';
-import { userApi } from '../lib/api/userapi';
+import { expect } from "@playwright/test";
+import { fixtures as test } from "../lib/api/apiFixtures";
+import { postData, userData } from "../lib/data/mocks/mocks";
+import { randomEmail } from "../lib/helpers/randomiser";
 
-test.describe('Users test', () => {
-  
-    test('get list of users', async ({ request }) => {
-    const api = new userApi(request);
-    const response = await api.getusers();
-    console.log(response.status());
-    expect(response.ok()).toBeTruthy();
+test.describe("Users test", () => {
+  test("Create user", async ({ userApi }) => {
+    const email = randomEmail();
+    const response = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 201).toBeTruthy();
+    expect.soft(Array.isArray(response.body)).toBeFalsy();
+    expect.soft(response.body.gender).toBe("female");
+    expect.soft(response.body.email).toBe(email);
+    expect.soft(response.body.name).toBe("Custom name");
+    expect.soft(response.body.status).toBe("active");
+    expect(test.info().errors).toHaveLength(0);
   });
 
-  
-  test('create user', async ({ request }) => {
-    const api = new userApi(request);
-    const response = await api.createAUser();
-    console.log(response);
-    expect(response.ok()).toBeTruthy();
+  test("Get user details", async ({ userApi }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    const response = await userApi.getUserById(user.body.id);
+    expect.soft(Array.isArray(response.body)).toBeFalsy();
+    expect.soft(response.statusCode === 200).toBeTruthy();
+    expect.soft(response.body.email).toBe(email);
+    expect(test.info().errors).toHaveLength(0);
   });
 
-
-
-
-
-  test('create a user post', async ({ request }) => {
-    const response = await buildRequest(request, 'userPost', 'post', {data: postData.validPost(), id: 6972325});
-    console.log(response);
-    expect(response.ok()).toBeTruthy();
+  test("Update user details", async ({ userApi }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    const updatedEmail = randomEmail();
+    const response = await userApi.updateUserById(
+      userData.updateFieldsUser({ email: updatedEmail }),
+      user.body.id
+    );
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 200).toBeTruthy();
+    expect.soft(Array.isArray(response.body)).toBeFalsy();
+    expect.soft(response.body.gender).toBe("male");
+    expect.soft(response.body.email).toBe(updatedEmail);
+    expect.soft(response.body.name).toBe("Updated user");
+    expect.soft(response.body.status).toBe("inactive");
+    expect(test.info().errors).toHaveLength(0);
   });
 
-  test('create user with invalid email', async ({ request }) => {
-    const response = await request.post('users', {
-        data: userData.customUser({name: ''})
-      });
-    console.log(await response.json());
-    await expect(response).not.toBeOK();
+  test("Create user post", async ({ userApi }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    const response = await userApi.createUserPost(
+      postData.validPost({ user_id: user.body.id }),
+      user.body.id
+    );
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 201).toBeTruthy();
+    expect.soft(response.body.title).toBe("Valid Post title");
+    expect.soft(response.body.body).toBe("Valid post body");
+    expect.soft(response.body.user_id).toBe(user.body.id);
+    expect(test.info().errors).toHaveLength(0);
   });
 
-  test('create user with empty fields', async ({ request }) => {
-    const response = await request.post('users', {
-        data: userData.userWithEmptyFields()
-      });
-    console.log(await response.json());
-    await expect(response).not.toBeOK();
+  test("Retrieves user posts when user does not have any posts", async ({
+    userApi,
+  }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    const userPosts = await userApi.getUserPosts(user.body.id);
+    expect.soft(Array.isArray(userPosts.body)).toBeTruthy();
+    expect.soft(userPosts.body.length).toBe(0);
+    expect(test.info().errors).toHaveLength(0);
   });
 
-  test('create user with empty empty', async ({ request }) => {
-    const response = await request.post('users', {
-        data: {
-          name: '123',
-          gender: 'female',
-          email: '',
-          status: 'active'
-        }
-      });
-    console.log(await response.json());
-    await expect(response).not.toBeOK();
+  test("Retrieves user posts when user has some posts", async ({ userApi }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
+    const post = await userApi.createUserPost(
+      postData.validPost({ user_id: user.body.id }),
+      user.body.id
+    );
+    const userPosts = await userApi.getUserPosts(user.body.id);
+    expect.soft(Array.isArray(userPosts.body)).toBeTruthy();
+    expect.soft(userPosts.body.length).toBe(1);
+    expect(test.info().errors).toHaveLength(0);
   });
 
-test('update user', async ({ request }) => {
-    const response = await request.put('users/6940102', {
-        data: {
-          name: 'updated name',
-          email: 'ddfdf',
-          status: 'active'
-        }
-      });
-    console.log(response.json());
-    expect(response.ok()).toBeTruthy();
-  });
+  test("Delete user", async ({ userApi }) => {
+    const email = randomEmail();
+    const user = await userApi.createUser(
+      userData.customUser({ email: email })
+    );
 
-  test('delete user', async ({ request }) => {
-    const response = await request.put('users/6940102', {
-        data: {
-          name: 'updated name',
-          email: 'ddfdf',
-          status: 'active'
-        }
-      });
-    console.log(response.json());
-    expect(response.ok()).toBeTruthy();
+    const response = await userApi.deleteUserById(user.body.id);
+    console.log(response.body);
+    expect.soft(response.status).toBeTruthy();
+    expect.soft(response.statusCode === 201).toBeTruthy();
+    expect(test.info().errors).toHaveLength(0);
   });
-
 });
-

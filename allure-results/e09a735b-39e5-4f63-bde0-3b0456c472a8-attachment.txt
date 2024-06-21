@@ -1,0 +1,11 @@
+{
+  method: 'post',
+  url: 'users',
+  data: {
+    name: 'Custom name',
+    gender: 'female',
+    email: 'Luigi10@hotmail.com',
+    status: 'active'
+  }
+}
+{ method: 'get', url: 'users/6975711/posts', data: undefined }

@@ -1,0 +1,2 @@
+{ method: 'delete', url: 'users/123', data: undefined }
+404
