@@ -1,0 +1,8 @@
+{
+  id: 6976982,
+  name: 'Custom name',
+  email: 'Roosevelt.Osinski96@gmail.com',
+  gender: 'female',
+  status: 'active'
+}
+{ email: 'Chris_Schroeder@hotmail.com' }
